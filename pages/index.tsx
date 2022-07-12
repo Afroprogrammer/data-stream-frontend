@@ -266,7 +266,6 @@ const Home = () => {
                             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                                 <div className="relative shadow-xl sm:rounded-2xl sm:overflow-hidden">
                                     <div className="absolute inset-0">
-                                       {/*<Image src="/mobile-bank-application" width={6016} height={4016} />*/}
                                         <img
                                             className="h-full w-full object-cover"
                                             src="/mobile-bank-application.png"
