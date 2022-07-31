@@ -10,13 +10,11 @@ const Signin = () => {
     const [email, setEmail] = useState('')
     const {data: session, status} = useSession()
     const router = useRouter();
-    useEffect(() => {
-        return () => {
+
             if (session) {
                 router.push('/dashboard')
             }
-        };
-    }, [session]);
+
 
     const handleOAuthSignIn = (provider: string) => () => signIn(provider)
     const handleSubmit = (e: any) => {
