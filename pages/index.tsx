@@ -283,9 +283,11 @@ const Home = () => {
                             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                                 <div className="relative shadow-xl sm:rounded-2xl sm:overflow-hidden">
                                     <div className="absolute inset-0">
-                                        <img
+                                        <Image
+                                            width='6000'
+                                            height='4000'
                                             className="h-full w-full object-cover"
-                                            src="/mobile-bank-application.png"
+                                            src="/mobile-bank-application.jpg"
                                             alt="Man using Laptop"
                                         />
                                         <div className="absolute inset-0 bg-indigo-700 mix-blend-multiply" />
