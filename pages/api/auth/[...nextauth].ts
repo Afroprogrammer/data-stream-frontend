@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import FacebookProvider from "next-auth/providers/facebook";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter"
-import clientPromise from "../../../database/connectDB";
+// import clientPromise from "../../../database/connectDB";
 import {any} from "prop-types";
 
 export default NextAuth({
@@ -16,5 +16,5 @@ export default NextAuth({
     pages:{
       signIn: '/signin',
     },
-    adapter: MongoDBAdapter(clientPromise),
+    // adapter: MongoDBAdapter(clientPromise),
 })
