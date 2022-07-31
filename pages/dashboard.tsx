@@ -23,6 +23,7 @@ import {
 import { SearchIcon } from '@heroicons/react/solid'
 import {useSession,signOut} from "next-auth/react";
 import {useRouter} from "next/router";
+import Link from "next/link";
 
 const navigation = [
     { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
