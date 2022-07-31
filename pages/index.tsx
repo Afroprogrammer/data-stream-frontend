@@ -252,17 +252,20 @@ const Home = () => {
                                         {/*    ))}*/}
                                         {/*</div>*/}
                                         <div className="mt-6">
+                                            <Link href= "/signup">
                                             <a
-                                                href="#"
                                                 className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
                                             >
                                                 Sign up
                                             </a>
+                                            </Link>
                                             <p className="mt-6 text-center text-base font-medium text-gray-500">
-                                                Existing customer?
-                                                <a href="#" className="text-gray-900">
+                                                Existing customer? {' '}
+                                                <Link href= "/signin">
+                                                <a  className="text-gray-900">
                                                     Sign in
                                                 </a>
+                                                </Link>
                                             </p>
                                         </div>
                                     </div>
@@ -283,7 +286,7 @@ const Home = () => {
                                         <img
                                             className="h-full w-full object-cover"
                                             src="/mobile-bank-application.png"
-                                            alt="People working on laptops"
+                                            alt="Man using Laptop"
                                         />
                                         <div className="absolute inset-0 bg-indigo-700 mix-blend-multiply" />
                                     </div>
