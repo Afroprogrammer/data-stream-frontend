@@ -61,7 +61,7 @@ function dashboard () {
     const {data: session, status} = useSession({
         required: true,
         onUnauthenticated: () => {
-            push('/signin')
+            push('/')
         },
     })
 
