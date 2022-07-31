@@ -17,6 +17,9 @@ import {
     QuestionMarkCircleIcon,
 } from '@heroicons/react/outline'
 import { ChevronDownIcon } from '@heroicons/react/solid'
+import {useSession, signIn, signOut} from "next-auth/react";
+import {useRouter} from "next/router";
+import Image from "next/image";
 
 const solutions = [
     {
@@ -70,10 +73,17 @@ const communicationFeatures = [
 ]
 
 const Home = () => {
+    const {data: session } = useSession()
+    const{push, asPath} = useRouter()
     const ref = useRef(null);
     React.useEffect(() => {
         import("@lottiefiles/lottie-player");
     });
+    const handleSignOut = async() => {
+        const data = await signOut({redirect: false, callbackUrl: '/index'})
+    }
+    const handleSignIn = () => push(`/signin?callbackUrl=${asPath}`)
+
     return (
         <div>
             <Head>
@@ -87,9 +97,13 @@ const Home = () => {
                             <div className="flex justify-start lg:w-0 lg:flex-1">
                                 <a href="#">
                                     <span className="sr-only">Workflow</span>
-                                    <img
-                                        className="h-8 w-auto sm:h-10"
-                                        src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+                                    <Image
+                                        className="h-10 w-auto sm:h-10"
+                                        // src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+                                        src = "/crushBigCrop.png"
+                                        // src = "/crushImage.png"
+                                        width = "95"
+                                        height= '25'
                                         alt=""
                                     />
                                 </a>
@@ -277,11 +291,13 @@ const Home = () => {
                                         <h1 className="text-center text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
                                             <span className="block text-white">
                                                         Digital payment for all your</span>
-                                            <span className="block text-indigo-200">lifestyle needs</span>
+                                            <span className="block text-indigo-200">lifestyle payments</span>
                                         </h1>
                                         <p className="mt-6 max-w-lg mx-auto text-center text-xl text-indigo-200 sm:max-w-3xl">
-                                            Life shouldn't be so complicated. Pay your bills, transfer money, fund your betting wallet,
-                                            buy Gift cards for your loved ones, top up airtime and data with a few clicks.
+                                            CushPay is your digital wallet for all your lifestyle needs: top up your
+                                            mobile lines with airtime and data; renew your cable TV and electricity;
+                                            transfer funds; pay for your car insurance; or make payments with virtual
+                                            naira or dollar debit cards.
                                         </p>
                                         <div className="mt-10 max-w-sm mx-auto sm:max-w-none sm:flex sm:justify-center">
                                             <div className="space-y-4 sm:space-y-0 sm:mx-auto sm:inline-grid sm:grid-cols-1 sm:gap-5">
@@ -409,6 +425,7 @@ const Home = () => {
             </div>
             <Footer/>
         </div>
+
     );
 };
 

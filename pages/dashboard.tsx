@@ -1,7 +1,9 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
+import { ExclamationIcon } from '@heroicons/react/outline'
+
 import {
     BellIcon,
     CalendarIcon,
@@ -14,16 +16,26 @@ import {
     UsersIcon,
     ShoppingCartIcon,
     XIcon,
+    TruckIcon,
+    CashIcon,
+    CurrencyDollarIcon
 } from '@heroicons/react/outline'
 import { SearchIcon } from '@heroicons/react/solid'
+import {useSession,signOut} from "next-auth/react";
+import {useRouter} from "next/router";
 
 const navigation = [
     { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
     { name: 'Airtime & Bundle', href: '#', icon: DeviceMobileIcon, current: false },
-    // { name: 'Projects', href: '#', icon: FolderIcon, current: false },
     { name: 'Pay Bills', href: '#', icon: ShoppingCartIcon, current: false },
-    // { name: 'Documents', href: '#', icon: InboxIcon, current: false },
-    // { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
+    { name: 'Cable TV', href: '#', icon: InboxIcon, current: false },
+    // coming soon
+    { name: 'Car Insurance', href: '#', icon: TruckIcon, current: false },
+    { name: 'Betting', href: '#', icon: UsersIcon, current: false },
+    { name: 'Fund Transfer', href: '#', icon: CashIcon, current: false },
+    { name: 'Virtual Naira and Dollar Cards', href: '#', icon: CurrencyDollarIcon, current: false },
+
+
 ]
 const userNavigation = [
     { name: 'Your Profile', href: '#' },
@@ -36,9 +48,47 @@ function classNames(...classes:any[]) {
 }
 
 
-const dashboard = () => {
+function dashboard () {
+    const {push} = useRouter();
+    const handleSignOut = async () => {
+        const data = await signOut({redirect: false, callbackUrl: "/"})
+        push(data.url)
+    }
+    const [open, setOpen] = useState(true)
+
+    const cancelButtonRef = useRef(null)
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    return (
+    const {data: session, status} = useSession({
+        required: true,
+        onUnauthenticated: () => {
+            push('/signin')
+        },
+    })
+
+    if (status === 'loading') {
+        return (
+            <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                <div className="flex">
+                    <div className="flex-shrink-0">
+                        <ExclamationIcon className="h-5 w-5 text-yellow-400" aria-hidden="true" />
+                    </div>
+                    <div className="ml-3">
+                        <p className="text-sm text-yellow-700">
+                            You have no credits left.{' '}
+                            <a href="#" className="font-medium underline text-yellow-700 hover:text-yellow-600">
+                                Loading..................
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            </div>
+        )
+    }
+
+    if (status === 'authenticated') {
+    return(
         <div>
             <Transition.Root show={sidebarOpen} as={Fragment}>
                 <Dialog as="div" className="relative z-40 md:hidden" onClose={setSidebarOpen}>
@@ -88,7 +138,8 @@ const dashboard = () => {
                                 <div className="flex-shrink-0 flex items-center px-4">
                                     <img
                                         className="h-8 w-auto"
-                                        src="https://tailwindui.com/img/logos/workflow-logo-indigo-300-mark-white-text.svg"
+                                        // src="https://tailwindui.com/img/logos/workflow-logo-indigo-300-mark-white-text.svg"
+                                        src = "/crushBigCrop.png"
                                         alt="Workflow"
                                     />
                                 </div>
@@ -125,7 +176,8 @@ const dashboard = () => {
                     <div className="flex items-center flex-shrink-0 px-4">
                         <img
                             className="h-8 w-auto"
-                            src="https://tailwindui.com/img/logos/workflow-logo-indigo-300-mark-white-text.svg"
+                            // src="https://tailwindui.com/img/logos/workflow-logo-indigo-300-mark-white-text.svg"
+                            src="/logowhite.png"
                             alt="Workflow"
                         />
                     </div>
@@ -192,11 +244,18 @@ const dashboard = () => {
                                 <div>
                                     <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                         <span className="sr-only">Open user menu</span>
-                                        <img
-                                            className="h-8 w-8 rounded-full"
-                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                            alt=""
-                                        />
+                                        { session? (
+                                            <img
+                                                className="h-8 w-8 rounded-full" src={session.user?.image as string | undefined} alt="profile image"
+                                            />
+                                        ) : (
+                                            <img
+                                                className="h-8 w-8 rounded-full"
+                                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                                alt="profile image"
+                                            />
+                                        )}
+
                                     </Menu.Button>
                                 </div>
                                 <Transition
@@ -209,21 +268,41 @@ const dashboard = () => {
                                     leaveTo="transform opacity-0 scale-95"
                                 >
                                     <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                        {userNavigation.map((item) => (
-                                            <Menu.Item key={item.name}>
-                                                {({ active }) => (
-                                                    <a
-                                                        href={item.href}
-                                                        className={classNames(
-                                                            active ? 'bg-gray-100' : '',
-                                                            'block px-4 py-2 text-sm text-gray-700'
-                                                        )}
-                                                    >
-                                                        {item.name}
-                                                    </a>
-                                                )}
-                                            </Menu.Item>
-                                        ))}
+                                        {/*{userNavigation.map((item) => (*/}
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                                // <a
+                                                //     href={item.href}
+                                                //     className={classNames(
+                                                //         active ? 'bg-gray-100' : '',
+                                                //         'block px-4 py-2 text-sm text-gray-700'
+                                                //     )}
+                                                // >
+                                                //     {item.name}
+                                                // </a>
+
+                                                <a className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
+                                                    Your Profile</a>
+                                                // <a className={classNames( active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
+                                                // Settings </a>
+                                                // <a className={classNames( active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
+                                                // Sign out</a>
+                                            )}
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                                <a className={classNames( active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
+                                                    Settings </a>
+                                            )}
+                                        </Menu.Item>
+
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                                <a onClick={handleSignOut} className={classNames( active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
+                                                    Sign out</a>
+                                            )}
+                                        </Menu.Item>
+                                        {/*))}*/}
                                     </Menu.Items>
                                 </Transition>
                             </Menu>
@@ -247,27 +326,34 @@ const dashboard = () => {
                 </main>
             </div>
         </div>
-);
+    )
+}
+
+  // return (
+  //     <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+  //         <div className="flex">
+  //             <div className="flex-shrink-0">
+  //                 <ExclamationIcon className="h-5 w-5 text-yellow-400" aria-hidden="true" />
+  //             </div>
+  //             <div className="ml-3">
+  //                 <p className="text-sm text-yellow-700">
+  //                     You have no credits left.{' '}
+  //                     <a href="#" className="font-medium underline text-yellow-700 hover:text-yellow-600">
+  //                        You are not signed in
+  //                     </a>
+  //                 </p>
+  //             </div>
+  //         </div>
+  //     </div>
+  // )
+
+
+
 };
 
 export default dashboard;
 
-/*
-  This example requires Tailwind CSS v2.0+
 
-  This example requires some changes to your config:
-
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
 
 
 

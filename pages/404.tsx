@@ -18,7 +18,9 @@ const pagenotfound = () => {
                         <span className="sr-only">Workflow</span>
                         <img
                             className="h-12 w-auto"
-                            src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=600"
+                            // src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=600"
+                            src="/crushBigCrop.png"
+
                             alt=""
                         />
                     </a>
