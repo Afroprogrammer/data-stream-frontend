@@ -287,7 +287,8 @@ const Home = () => {
                                             width='6000'
                                             height='4000'
                                             className="h-full w-full object-cover"
-                                            src="/mobile-bank-application.jpg"
+                                            // src="/mobile-bank-application.jpg"
+                                            src ="/mobile-bank-application-min.jpg"
                                             alt="Man using Laptop"
                                         />
                                         <div className="absolute inset-0 bg-indigo-700 mix-blend-multiply" />
