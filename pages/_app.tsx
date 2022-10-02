@@ -1,26 +1,37 @@
 import '../styles/globals.css'
-import { SessionProvider } from 'next-auth/react'
-import type { AppProps } from 'next/app'
+import type {AppProps} from 'next/app'
 import {Component} from "react";
+import {AuthContextProvider} from "../context/AuthContext";
+import {useRouter} from "next/router";
+import ProtectedRoute from "../components/ProtectedRoute";
 
-// function MyApp({ Component, pageProps }: AppProps) {
-//   return <Component {...pageProps} />
-// }
-// @ts-ignore
-class MyApp extends Component<{ Component: any, pageProps: any }> {
-    render() {
-        let {
-            Component,
-            pageProps: {session, ...pageProps}
-        } = this.props;
-        return (
-            <SessionProvider session={session}>
-                <Component {...pageProps} />
-            </SessionProvider>
-        )
+const noAuthRequired = ['/index', '/404', '/', '/signin', '/signup', '/password']
+
+function MyApp({Component, pageProps}: AppProps) {
+    const router = useRouter()
+    return (
+
+        <AuthContextProvider>
+            {noAuthRequired.includes(router.pathname)
+                ? (
+                    <Component {...pageProps} />
+                )
+                : (
+                    <ProtectedRoute>
+                        <Component {...pageProps} />
+                    </ProtectedRoute>
+                )
+            }
+        </AuthContextProvider>
+    )
 
 
-    }
+    // return(
+    //
+    //     <AuthContextProvider>
+    //                     <Component {...pageProps} />
+    //     </AuthContextProvider>
+    // )
 }
 
 export default MyApp

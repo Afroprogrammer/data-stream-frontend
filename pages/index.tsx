@@ -2,7 +2,7 @@ import React, {useRef} from 'react';
 import { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import {AnnotationIcon, MailIcon} from '@heroicons/react/outline'
-import Footer from "./components/Footer";
+import Footer from "../components/Footer";
 import Head from "next/head";
 import Link from "next/link";
 import {
@@ -73,7 +73,7 @@ const communicationFeatures = [
 ]
 
 const Home = () => {
-    const {data: session } = useSession()
+    //
     const{push, asPath} = useRouter()
     const ref = useRef(null);
     React.useEffect(() => {
@@ -287,7 +287,6 @@ const Home = () => {
                                             width='6000'
                                             height='4000'
                                             className="h-full w-full object-cover"
-                                            // src="/mobile-bank-application.jpg"
                                             src ="/mobile-bank-application-min.jpg"
                                             alt="Man using Laptop"
                                         />
