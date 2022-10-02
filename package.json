@@ -11,6 +11,7 @@
     "@lottiefiles/lottie-player": "^1.5.7",
     "@lottiefiles/react-lottie-player": "^3.4.7",
     "@next-auth/mongodb-adapter": "^1.0.4",
+    "firebase": "^9.10.0",
     "mongodb": "^4.8.1",
     "next": "latest",
     "next-auth": "^4.10.2",

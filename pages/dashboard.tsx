@@ -1,8 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 
-import { Fragment, useState } from 'react'
-import { Dialog, Menu, Transition } from '@headlessui/react'
-import { ExclamationIcon } from '@heroicons/react/outline'
+import {Fragment, useState} from 'react'
+import {Dialog, Menu, Transition} from '@headlessui/react'
 
 import {
     BellIcon,
@@ -20,76 +19,58 @@ import {
     CashIcon,
     CurrencyDollarIcon
 } from '@heroicons/react/outline'
-import { SearchIcon } from '@heroicons/react/solid'
-import {useSession,signOut} from "next-auth/react";
+import {SearchIcon} from '@heroicons/react/solid'
+import {useSession, signOut} from "next-auth/react";
 import {useRouter} from "next/router";
 import Link from "next/link";
+import {useAuth} from "../context/AuthContext";
 
 const navigation = [
-    { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-    { name: 'Airtime & Bundle', href: '#', icon: DeviceMobileIcon, current: false },
-    { name: 'Pay Bills', href: '#', icon: ShoppingCartIcon, current: false },
-    { name: 'Cable TV', href: '#', icon: InboxIcon, current: false },
+    {name: 'Dashboard', href: '#', icon: HomeIcon, current: true},
+    {name: 'Airtime & Bundle', href: '#', icon: DeviceMobileIcon, current: false},
+    {name: 'Pay Bills', href: '#', icon: ShoppingCartIcon, current: false},
+    {name: 'Cable TV', href: '#', icon: InboxIcon, current: false},
     // coming soon
-    { name: 'Car Insurance', href: '#', icon: TruckIcon, current: false },
-    { name: 'Betting', href: '#', icon: UsersIcon, current: false },
-    { name: 'Fund Transfer', href: '#', icon: CashIcon, current: false },
-    { name: 'Virtual Naira and Dollar Cards', href: '#', icon: CurrencyDollarIcon, current: false },
+    {name: 'Car Insurance', href: '#', icon: TruckIcon, current: false},
+    {name: 'Betting', href: '#', icon: UsersIcon, current: false},
+    {name: 'Fund Transfer', href: '#', icon: CashIcon, current: false},
+    {name: 'Virtual Naira and Dollar Cards', href: '#', icon: CurrencyDollarIcon, current: false},
 
 
 ]
 const userNavigation = [
-    { name: 'Your Profile', href: '#' },
-    { name: 'Settings', href: '#' },
-    { name: 'Sign out', href: '#' },
+    {name: 'Your Profile', href: '#'},
+    {name: 'Settings', href: '#'},
+    {name: 'Sign out', href: '#'},
 ]
 
-function classNames(...classes:any[]) {
+function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ')
 }
 
 
-function dashboard () {
+function dashboard() {
+    const {currentUser, logout} = useAuth()
     const {push} = useRouter();
-    const handleSignOut = async () => {
-        const data = await signOut({redirect: false, callbackUrl: "/"})
-        push(data.url)
-    }
     const [open, setOpen] = useState(true)
-
+    const [error, setError] = useState("")
     const cancelButtonRef = useRef(null)
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const {data: session, status} = useSession({
-        required: true,
-        onUnauthenticated: () => {
-            push('/')
-        },
-    })
 
-    if (status === 'loading') {
-        return (
-            <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
-            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-                <div className="flex">
-                    <div className="flex-shrink-0">
-                        <ExclamationIcon className="h-5 w-5 text-yellow-400" aria-hidden="true" />
-                    </div>
-                    <div className="ml-3">
-                        <p className="text-sm text-yellow-700">
-                            You have no credits left.{' '}
-                            <a href="#" className="font-medium underline text-yellow-700 hover:text-yellow-600">
-                                Loading..................
-                            </a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            </div>
-        )
+
+    const handleSignOut = async () => {
+        setError('')
+        try {
+            push('/')
+            await logout()
+        } catch {
+            setError('Failed to log out')
+        }
+
     }
 
-    if (status === 'authenticated') {
-    return(
+
+    return (
         <div>
             <Transition.Root show={sidebarOpen} as={Fragment}>
                 <Dialog as="div" className="relative z-40 md:hidden" onClose={setSidebarOpen}>
@@ -102,7 +83,7 @@ function dashboard () {
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                     >
-                        <div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
+                        <div className="fixed inset-0 bg-gray-600 bg-opacity-75"/>
                     </Transition.Child>
 
                     <div className="fixed inset-0 flex z-40">
@@ -115,7 +96,8 @@ function dashboard () {
                             leaveFrom="translate-x-0"
                             leaveTo="-translate-x-full"
                         >
-                            <Dialog.Panel className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-indigo-700">
+                            <Dialog.Panel
+                                className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-indigo-700">
                                 <Transition.Child
                                     as={Fragment}
                                     enter="ease-in-out duration-300"
@@ -132,7 +114,7 @@ function dashboard () {
                                             onClick={() => setSidebarOpen(false)}
                                         >
                                             <span className="sr-only">Close sidebar</span>
-                                            <XIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                                            <XIcon className="h-6 w-6 text-white" aria-hidden="true"/>
                                         </button>
                                     </div>
                                 </Transition.Child>
@@ -140,7 +122,7 @@ function dashboard () {
                                     <img
                                         className="h-8 w-auto"
                                         // src="https://tailwindui.com/img/logos/workflow-logo-indigo-300-mark-white-text.svg"
-                                        src = "/crushBigCrop.png"
+                                        src="/crushBigCrop.png"
                                         alt="Workflow"
                                     />
                                 </div>
@@ -155,7 +137,8 @@ function dashboard () {
                                                     'group flex items-center px-2 py-2 text-base font-medium rounded-md'
                                                 )}
                                             >
-                                                <item.icon className="mr-4 flex-shrink-0 h-6 w-6 text-indigo-300" aria-hidden="true" />
+                                                <item.icon className="mr-4 flex-shrink-0 h-6 w-6 text-indigo-300"
+                                                           aria-hidden="true"/>
                                                 {item.name}
                                             </a>
                                         ))}
@@ -193,7 +176,8 @@ function dashboard () {
                                         'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
                                     )}
                                 >
-                                    <item.icon className="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300" aria-hidden="true" />
+                                    <item.icon className="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
+                                               aria-hidden="true"/>
                                     {item.name}
                                 </a>
                             ))}
@@ -209,7 +193,7 @@ function dashboard () {
                         onClick={() => setSidebarOpen(true)}
                     >
                         <span className="sr-only">Open sidebar</span>
-                        <MenuAlt2Icon className="h-6 w-6" aria-hidden="true" />
+                        <MenuAlt2Icon className="h-6 w-6" aria-hidden="true"/>
                     </button>
                     <div className="flex-1 px-4 flex justify-between">
                         <div className="flex-1 flex">
@@ -219,7 +203,7 @@ function dashboard () {
                                 </label>
                                 <div className="relative w-full text-gray-400 focus-within:text-gray-600">
                                     <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none">
-                                        <SearchIcon className="h-5 w-5" aria-hidden="true" />
+                                        <SearchIcon className="h-5 w-5" aria-hidden="true"/>
                                     </div>
                                     <input
                                         id="search-field"
@@ -237,25 +221,32 @@ function dashboard () {
                                 className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 <span className="sr-only">View notifications</span>
-                                <BellIcon className="h-6 w-6" aria-hidden="true" />
+                                <BellIcon className="h-6 w-6" aria-hidden="true"/>
                             </button>
 
                             {/* Profile dropdown */}
                             <Menu as="div" className="ml-3 relative">
                                 <div>
-                                    <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    <Menu.Button
+                                        className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                         <span className="sr-only">Open user menu</span>
-                                        { session? (
-                                            <img
-                                                className="h-8 w-8 rounded-full" src={session.user?.image as string | undefined} alt="profile image"
-                                            />
-                                        ) : (
-                                            <img
-                                                className="h-8 w-8 rounded-full"
-                                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                alt="profile image"
-                                            />
-                                        )}
+                                        {/*loading user profile name is paused for now */}
+                                        {/*{ user? (*/}
+                                        {/*    <img*/}
+                                        {/*        className="h-8 w-8 rounded-full" src={session.user?.image as string | undefined} alt="profile image"*/}
+                                        {/*    />*/}
+                                        {/*) : (*/}
+                                        {/*    <img*/}
+                                        {/*        className="h-8 w-8 rounded-full"*/}
+                                        {/*        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"*/}
+                                        {/*        alt="profile image"*/}
+                                        {/*    />*/}
+                                        {/*)}*/}
+                                        <img
+                                            className="h-8 w-8 rounded-full"
+                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                            alt="profile image"
+                                        />
 
                                     </Menu.Button>
                                 </div>
@@ -268,10 +259,11 @@ function dashboard () {
                                     leaveFrom="transform opacity-100 scale-100"
                                     leaveTo="transform opacity-0 scale-95"
                                 >
-                                    <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                    <Menu.Items
+                                        className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                         {/*{userNavigation.map((item) => (*/}
                                         <Menu.Item>
-                                            {({ active }) => (
+                                            {({active}) => (
                                                 // <a
                                                 //     href={item.href}
                                                 //     className={classNames(
@@ -291,15 +283,16 @@ function dashboard () {
                                             )}
                                         </Menu.Item>
                                         <Menu.Item>
-                                            {({ active }) => (
-                                                <a className={classNames( active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
+                                            {({active}) => (
+                                                <a className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
                                                     Settings </a>
                                             )}
                                         </Menu.Item>
 
                                         <Menu.Item>
-                                            {({ active }) => (
-                                                <a onClick={handleSignOut} className={classNames( active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
+                                            {({active}) => (
+                                                <a onClick={handleSignOut}
+                                                   className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
                                                     Sign out</a>
                                             )}
                                         </Menu.Item>
@@ -319,7 +312,7 @@ function dashboard () {
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                             {/* Replace with your content */}
                             <div className="py-4">
-                                <div className="border-4 border-dashed border-gray-200 rounded-lg h-96" />
+                                <div className="border-4 border-dashed border-gray-200 rounded-lg h-96"/>
                             </div>
                             {/* /End replace */}
                         </div>
@@ -328,26 +321,25 @@ function dashboard () {
             </div>
         </div>
     )
-}
 
-  // return (
-  //     <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-  //         <div className="flex">
-  //             <div className="flex-shrink-0">
-  //                 <ExclamationIcon className="h-5 w-5 text-yellow-400" aria-hidden="true" />
-  //             </div>
-  //             <div className="ml-3">
-  //                 <p className="text-sm text-yellow-700">
-  //                     You have no credits left.{' '}
-  //                     <a href="#" className="font-medium underline text-yellow-700 hover:text-yellow-600">
-  //                        You are not signed in
-  //                     </a>
-  //                 </p>
-  //             </div>
-  //         </div>
-  //     </div>
-  // )
 
+    // return (
+    //     <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+    //         <div className="flex">
+    //             <div className="flex-shrink-0">
+    //                 <ExclamationIcon className="h-5 w-5 text-yellow-400" aria-hidden="true" />
+    //             </div>
+    //             <div className="ml-3">
+    //                 <p className="text-sm text-yellow-700">
+    //                     You have no credits left.{' '}
+    //                     <a href="#" className="font-medium underline text-yellow-700 hover:text-yellow-600">
+    //                        You are not signed in
+    //                     </a>
+    //                 </p>
+    //             </div>
+    //         </div>
+    //     </div>
+    // )
 
 
 };

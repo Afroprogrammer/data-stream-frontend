@@ -1,21 +1,54 @@
-import React, {useState} from 'react';
-import {signIn, useSession} from "next-auth/react";
+import React, {useRef, useState} from 'react';
 import {useRouter} from "next/router";
+import {useAuth} from "../context/AuthContext";
+import Link from "next/link";
+import {ExclamationCircleIcon} from "@heroicons/react/solid";
+
+
+
 
 const Signup = () => {
-    const [email, setEmail] = useState('')
-    const {data: session, status} = useSession()
-    const {push} = useRouter()
+    const {signup, googleLogin,currentUser } = useAuth()
+    const [error, setError ] = useState('')
+    const passwordConfirmRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+    const emailRef  = useRef<HTMLInputElement>(null);
+    const [loading, setLoading] = useState(false)
+    const router = useRouter()
 
-    if(session){
-        push('/dashboard')
-    }
-    const handleOAuthSignIn = (provider:string) => () => signIn(provider)
-    const handleSubmit = (e:any) =>{
+
+    async function handleSubmit (e:any){
         e.preventDefault()
-        if(!email) return false
-        signIn('email', {email, redirect: false})
+
+        if((passwordRef as any).current.value !== ( passwordConfirmRef as any).current.value){
+            return setError("Passwords do not match ")
+        }
+
+        try {
+            setError('')
+            setLoading(true)
+            if((emailRef as any).current.value !== ( emailRef as any).current.value) {
+                await signup(emailRef.current, passwordRef.current)
+            }
+            router.push('/dashboard')
+        } catch (e:any){
+            setError(e.message)
+        }
+        setLoading(false)
     }
+    async function handleOAuthSignIn(e: any) {
+        e.preventDefault()
+        try {
+            setError('')
+            setLoading(true)
+            await googleLogin()
+            router.push('/dashboard')
+        } catch (e: any) {
+            setError(e.message)
+        }
+        setLoading(false)
+    }
+
     return (
         <div className="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -28,82 +61,119 @@ const Signup = () => {
                 <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Get Started For Free</h2>
                 <p className="mt-2 text-center text-sm text-gray-600">
                     Already registered?{' '}
-                    <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                    <Link href="/signin">
+                    <a className="font-medium text-indigo-600 hover:text-indigo-500">
                         Sign in
                     </a>
+                        </Link>
                     {' '} into your account
                 </p>
             </div>
 
             <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                    {error && <div className="rounded-md bg-yellow-50 p-4">
+                        <div className="flex">
+                            <div className="flex-shrink-0">
+                                <ExclamationCircleIcon className="h-5 w-5 text-yellow-400" aria-hidden="true" />
+                            </div>
+                            <div className="ml-3">
+                                <h3 className="text-sm font-medium text-yellow-800">Attention needed</h3>
+                                <div className="mt-2 text-sm text-yellow-700">
+                                    <p>
+                                        {error}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>}
+
                     <form className="space-y-6" action="#" method="POST"  onSubmit={handleSubmit}>
+                    {/*<form className="space-y-6" action="#" method="POST" >*/}
                         <div className="grid grid-cols-6 gap-6">
 
-                            {/*//First name and last name  would be taken here if needed*/}
+                            <div className="col-span-6 sm:col-span-3">
+                                {/*<label htmlFor="first-name" className="block text-sm font-medium text-gray-700">*/}
+                                {/*   */}
+                                {/*</label>*/}
+                                <input
+                                    placeholder=" First name"
+                                    type="text"
+                                    name="first-name"
+                                    id="first-name"
+                                    autoComplete="given-name"
+                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
+                            </div>
 
-                            {/*<div className="col-span-6 sm:col-span-3">*/}
-                            {/*    <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">*/}
-                            {/*        First name*/}
-                            {/*    </label>*/}
-                            {/*    <input*/}
-                            {/*        type="text"*/}
-                            {/*        name="first-name"*/}
-                            {/*        id="first-name"*/}
-                            {/*        autoComplete="given-name"*/}
-                            {/*        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"*/}
-                            {/*    />*/}
-                            {/*</div>*/}
-
-                            {/*<div className="col-span-6 sm:col-span-3">*/}
-                            {/*    <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">*/}
-                            {/*        Last name*/}
-                            {/*    </label>*/}
-                            {/*    <input*/}
-                            {/*        type="text"*/}
-                            {/*        name="last-name"*/}
-                            {/*        id="last-name"*/}
-                            {/*        autoComplete="family-name"*/}
-                            {/*        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"*/}
-                            {/*    />*/}
-                            {/*</div>*/}
+                            <div className="col-span-6 sm:col-span-3">
+                                {/*<label htmlFor="last-name" className="block text-sm font-medium text-gray-700">*/}
+                                {/*    */}
+                                {/*</label>*/}
+                                <input
+                                    placeholder="Last name"
+                                    type="text"
+                                    name="last-name"
+                                    id="last-name"
+                                    autoComplete="family-name"
+                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
+                            </div>
                         </div>
 
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                Email address
-                            </label>
+                            {/*<label htmlFor="email" className="block text-sm font-medium text-gray-700">*/}
+                            {/*    */}
+                            {/*</label>*/}
                             <div className="mt-1">
-                                <input onChange={(e) => setEmail(e.target.value)}
+                                <input
+                                    placeholder="Email address"
                                     id="email"
                                     name="email"
                                     type="email"
                                     autoComplete="email"
+                                    ref={emailRef}
                                     required
                                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 />
                             </div>
                         </div>
-                        {/*//password would be taken here if needed*/}
-                        {/*<div>*/}
-                        {/*    <label htmlFor="password" className="block text-sm font-medium text-gray-700">*/}
-                        {/*        Password*/}
-                        {/*    </label>*/}
-                        {/*    <div className="mt-1">*/}
-                        {/*        <input*/}
-                        {/*            id="password"*/}
-                        {/*            name="password"*/}
-                        {/*            type="password"*/}
-                        {/*            autoComplete="current-password"*/}
-                        {/*            required*/}
-                        {/*            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"*/}
-                        {/*        />*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
+
+                        <div>
+                            <div className="mt-1">
+                                <input
+                                    placeholder="Password"
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    autoComplete="current-password"
+                                    ref={passwordRef}
+                                    required
+                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+
+                            <div className="mt-1">
+                                <input
+                                    placeholder ="Password Confirmation"
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    autoComplete="current-password"
+                                    ref={passwordConfirmRef}
+                                    required
+                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
+                            </div>
+                        </div>
 
                         <div>
                             <button
                                 type="submit"
+                                disabled={loading}
                                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 Sign up
@@ -139,7 +209,7 @@ const Signup = () => {
                             {/*        </svg>*/}
                             {/*    </a>*/}
                             {/*</div>*/}
-                            <div onClick={handleOAuthSignIn('google')}>
+                            <div onClick={handleOAuthSignIn}>
                                 <a
                                     href="#"
                                     className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
