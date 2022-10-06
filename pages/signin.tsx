@@ -1,9 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useRouter} from 'next/router'
 import {useAuth} from "../context/AuthContext";
+import signup from "./signup";
 
 const Signin = () => {
-    const {loginWithEmailAndPassword, googleLogin} = useAuth()
+    const {loginWithEmailAndPassword, googleLogin, createUser} = useAuth()
     const [error, setError] = useState('')
     const passwordRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
@@ -17,7 +18,7 @@ const Signin = () => {
         try {
             setError('')
             setLoading(true)
-            await loginWithEmailAndPassword((emailRef as any).current.value, (passwordRef as any).current.value)
+            await createUser((emailRef as any).current.value, (passwordRef as any).current.value)
             router.push('/dashboard')
         } catch(e:any) {
             setError(e.message)

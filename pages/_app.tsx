@@ -9,29 +9,29 @@ const noAuthRequired = ['/index', '/404', '/', '/signin', '/signup', '/password'
 
 function MyApp({Component, pageProps}: AppProps) {
     const router = useRouter()
-    // return (
-    //
-    //     <AuthContextProvider>
-    //         {noAuthRequired.includes(router.pathname)
-    //             ? (
-    //                 <Component {...pageProps} />
-    //             )
-    //             : (
-    //                 <ProtectedRoute>
-    //                     <Component {...pageProps} />
-    //                 </ProtectedRoute>
-    //             )
-    //         }
-    //     </AuthContextProvider>
-    // )
-
-
-    return(
+    return (
 
         <AuthContextProvider>
+            {noAuthRequired.includes(router.pathname)
+                ? (
+                    <Component {...pageProps} />
+                )
+                : (
+                    <ProtectedRoute>
                         <Component {...pageProps} />
+                    </ProtectedRoute>
+                )
+            }
         </AuthContextProvider>
     )
+
+//use this then you wan to test the app
+//     return(
+//
+//         <AuthContextProvider>
+//                         <Component {...pageProps} />
+//         </AuthContextProvider>
+//     )
 }
 
 export default MyApp
