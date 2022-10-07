@@ -25,13 +25,13 @@ function MyApp({Component, pageProps}: AppProps) {
         </AuthContextProvider>
     )
 
-
-    // return(
-    //
-    //     <AuthContextProvider>
-    //                     <Component {...pageProps} />
-    //     </AuthContextProvider>
-    // )
+//use this then you wan to test the app
+//     return(
+//
+//         <AuthContextProvider>
+//                         <Component {...pageProps} />
+//         </AuthContextProvider>
+//     )
 }
 
 export default MyApp

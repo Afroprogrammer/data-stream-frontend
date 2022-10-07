@@ -24,6 +24,7 @@ import {useSession, signOut} from "next-auth/react";
 import {useRouter} from "next/router";
 import Link from "next/link";
 import {useAuth} from "../context/AuthContext";
+import AirtimeResourceDisplay from "../components/AirtimeResourceDisplay";
 
 const navigation = [
     {name: 'Dashboard', href: '#', icon: HomeIcon, current: true},
@@ -43,6 +44,7 @@ const userNavigation = [
     {name: 'Settings', href: '#'},
     {name: 'Sign out', href: '#'},
 ]
+
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ')
@@ -70,6 +72,7 @@ function dashboard() {
     }
 
 
+    // @ts-ignore
     return (
         <div>
             <Transition.Root show={sidebarOpen} as={Fragment}>

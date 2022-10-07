@@ -20,9 +20,10 @@ export  function AuthContextProvider ({children} :any) {
     const provider = new GoogleAuthProvider();
 
 
-    const  signup = (email: string, password: string) =>{
+    const  createUser = (email: string, password: string) =>{
         return createUserWithEmailAndPassword(auth,email, password)
     }
+
     const loginWithEmailAndPassword = (email:string, password:string) => {
       return signInWithEmailAndPassword(auth,email, password)
 
@@ -49,7 +50,7 @@ export  function AuthContextProvider ({children} :any) {
 
     const value = {
         currentUser,
-        signup,
+        createUser,
         loginWithEmailAndPassword,
         logout,
         googleLogin,
