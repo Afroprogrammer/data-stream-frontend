@@ -1,7 +1,7 @@
-import MobileInput from './../components/topup/MobileInput';
+import Input from '../components/topup/Input';
 import TopUpAmount from './../components/topup/TopUpAmount';
 import TopUpSummary from './../components/topup/TopUpSummary';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TopUpHeader from '../components/topup/TopUpHeader';
 import { useForm } from 'react-hook-form';
 import { json } from 'stream/consumers';
@@ -15,21 +15,112 @@ type FormValues = {
 }
 
 import Link from 'next/link'
+import { async } from '@firebase/util';
+import Button from '../components/topup/Button';
 
 export default function topup() {
 
-
+    // Form steps
     const [step, setStep ] = useState(0);
-    const [mobileInput, setMobileInput] = useState('');
-    const [amountInput, setAmountInput] = useState('');
-    const { watch, register, formState: { errors, isValid }, getValues } = useForm<FormValues>();
-    const handleSubmit = (e:any) => {
-        e.preventDefault();
-        console.log(getValues())
-        const {mobile, amount} = getValues();
-        setMobileInput(mobile.toString())
-        setAmountInput(amount.toString())
+
+    // amount and mobile Input
+    const [mobile, setMobile] = useState('');
+    const [amount, setAmount] = useState('');
+    const [mobileValid, setMobileValid] = useState(false);
+    const [amountValid, setAmountValid] = useState(false);
+
+    // Input error
+    const [mobileError, setMobileError] = useState('');
+    const [amountError, setAmountError] = useState('');
+    
+    const [mobileStatus, setMobileStatus] = useState('');
+    const [error, setError] = useState('')
+    const [mobileStatusError, setMobileStatusError] = useState('');
+
+    useEffect(() => {
+        if (mobile) {
+            setMobileValid(true);
+        } else if (mobile == '') {
+            setMobileValid(false)
+            setAmountError("Amount cannot be empty")
+        } else if (!mobile) {
+            setMobileValid(false)
+            setAmountError("Amount cannot be empty")
+        }
+
+        // validate amount
+
+        if (amount) {
+            setAmountValid(true)
+        } else if (!amount) {
+            setAmountValid(false);
+            setAmountError("Amount cannot be empty")
+        } else if(amount == '') {
+            setAmountValid(false)
+            setAmountError("Amount cannot be empty")
+        } if (Number(amount) > 10000) {
+            setAmountError("Amount cannot be greater than N10,000. ")
+            setAmountValid(false)
+        } else {
+            setAmountError('')
+            setAmountValid(true);
+        }
+        
+    }, [mobile, amount])
+
+    // Validate Amount
+
+    const validateAmount = () => {
+        if (amount) {
+            setAmountValid(true)
+        } else if (!amount) {
+            setAmountValid(false);
+            setAmountError("Amount cannot be empty")
+        } else if(amount == '') {
+            setAmountValid(false)
+            setAmountError("Amount cannot be empty")
+        } if (Number(amount) > 1000) {
+            setAmountError("Amount cannot be greater than N10,000. ")
+            setAmountValid(false)
+        } else {
+            setAmountError('')
+            setAmountValid(true);
+        }
     }
+
+    const verifyAmount = () => {
+        if (amountValid) {
+            setStep(prev => prev + 1);
+        }
+    }
+
+    // API mobile inpute validation
+
+    const options = {
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Key': 'aca098f173mshd1b76bacd00150bp1e2c4fjsn4b6a192571f8',
+            'X-RapidAPI-Host': 'veriphone.p.rapidapi.com'
+        }
+    };
+
+    const verifyNumber = async () => {
+        const response: any = await fetch(`https://veriphone.p.rapidapi.com/verify?phone=%2B$${mobile}`, options);
+        const data = await response.json()
+        console.log(data)
+        setMobileStatus(data.phone_valid)
+        if (data.phone_valid) {
+            console.log("success");
+            setMobileError(" ")
+            setStep(pre => pre + 1)
+        } else {
+            setMobileError("Mobile Number is not valid")
+        }
+    }
+
+    // useEffect(()=> {
+    //     verifyNumber()
+    // })
 
     return (
         <div>
@@ -52,70 +143,22 @@ export default function topup() {
                                                 <TopUpHeader />
                                             </div>
                                             <div className="bg-white py-8 sm:rounded-lg md:max-w-md w-full">
-                                                <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit}>
-                                                    {/* {
-                                                        step == 0 && <MobileInput /> 
+                                                <form className="space-y-6" action="#" method="POST">
+                                                    {
+                                                        step == 0 && <Input name="Enter Mobile Number" error={mobileError} validate={mobileValid} verify={verifyNumber} value={mobile} valueInput={(e: any) => setMobile(e.target.value)}/> 
                                                     }
                                                     
                                                     {
-                                                        step == 1 && <TopUpAmount />
+                                                        step == 1 && <Input name="Enter Amount" error={amountError} validate={amountValid} verify={verifyAmount} value={amount} valueInput={(e: any) => setAmount(e.target.value)}  />
                                                     }
-                                                    {
+                                                    {/* {
                                                         step == 2 && <TopUpSummary />
                                                     } */}
-                                                    {
-                                                        step == 0 && 
-                                                        <div>
-                                                            <label htmlFor="mobile" className="block text-md font-thin capitalize font-medium text-gray-700">
-                                                            Enter mobile number
-                                                            </label>
-                                                            <div className="mt-1">
-                                                            <input
-                                                                {...register("mobile")}
-                                                                id="mobile"
-                                                                name="mobile"
-                                                                type="number"
-                                                                autoComplete="mobile"
-                                                                className="block w-full appearance-none rounded-sm border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                                            />
-                                                            {errors.mobile && <p className='text-red text-sm font-medium'>{errors.mobile.message}</p>}
-                                                            </div>
-                                                            {/* <div className='mt-6'>
-                                                                <button
-                                                                    disabled={!isValid}
-                                                                    type="button"
-                                                                    className="flex w-full uppercase justify-center rounded-sm border border-transparent bg-indigo-600 py-3 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-400"
-                                                                >
-                                                                    Sign in
-                                                                </button>
-                                                            </div> */}
-                                                        </div>
-                                                    }
-                                                    {
-                                                        step == 1 && 
-                                                        <div>
-                                                            <label htmlFor="amount" className="block text-md font-thin capitalize font-medium text-gray-700">
-                                                            Enter Amount
-                                                            </label>
-                                                            <div className="mt-1">
-                                                            <input
-                                                                {...register("amount")}
-                                                                id="amount"
-                                                                name="amount"
-                                                                type="number"
-                                                                autoComplete="amount"
-                                                                required
-                                                                className="block w-full appearance-none rounded-sm border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                                            />
-                                                            {errors.amount && <p className='text-red text-sm font-medium'>Amount cannot be empty</p>}
-                                                            </div>
-                                                        </div>
-                                                    }
                                                     {
                                                         step == 2 && 
                                                         <div>
                                                             <div className='font-sm font-medium border-black-1 border-b pb-3 mb-3 text-black '>
-                                                                Mtn TopUp for {mobileInput}
+                                                                Mtn TopUp for {mobile}
                                                             </div>
                                                             <div className='font-medium text-gray-500'>
                                                                 <div>
@@ -127,25 +170,21 @@ export default function topup() {
                                                                 <div>
                                                                     Price:
                                                                     <span className='font-normal ml-2 text-black'>
-                                                                        N {amountInput}
+                                                                        N {amount}
                                                                     </span>
                                                                 </div>
                                                             </div>
+                                                            <div className='mt-6'>
+                                                                {/* <button
+                                                                    type='button'
+                                                                    className="flex w-full uppercase justify-center rounded-sm border border-transparent bg-indigo-600 py-3 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-400"
+                                                                    >
+                                                                    Submit
+                                                                </button> */}
+                                                                <Button />
+                                                            </div>
                                                         </div>
                                                     }
-                                                    <div className=''>
-                                                        <button
-                                                            onClick={() => setStep(prev => prev + 1)}
-                                                            disabled={!isValid}
-                                                            type={step == 1 ? "button" : "submit"}
-                                                            className="flex w-full uppercase justify-center rounded-sm border border-transparent bg-indigo-600 py-3 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-400"
-                                                            >
-                                                            Submit
-                                                        </button>
-                                                    </div>
-                                                    {/* <pre>
-                                                        {JSON.stringify(watch(), null,2)}
-                                                    </pre> */}
                                                 </form>
                                             </div>
                                         </div>
