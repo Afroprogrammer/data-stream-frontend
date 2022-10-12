@@ -1,4 +1,5 @@
 import React, {useEffect, useRef} from 'react';
+import Balance from './../components/Navbar/Balance';
 
 import {Fragment, useState} from 'react'
 import {Dialog, Menu, Transition} from '@headlessui/react'
@@ -226,6 +227,7 @@ function dashboard() {
                                 <span className="sr-only">View notifications</span>
                                 <BellIcon className="h-6 w-6" aria-hidden="true"/>
                             </button>
+                            <Balance />
 
                             {/* Profile dropdown */}
                             <Menu as="div" className="ml-3 relative">
