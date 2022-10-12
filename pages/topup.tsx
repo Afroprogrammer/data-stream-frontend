@@ -99,8 +99,9 @@ export default function topup() {
     const options = {
         method: 'GET',
         headers: {
-            'X-RapidAPI-Key': 'aca098f173mshd1b76bacd00150bp1e2c4fjsn4b6a192571f8',
-            'X-RapidAPI-Host': 'veriphone.p.rapidapi.com'
+            'X-RapidAPI-Key' : `${process.env.NEXT_PUBLIC_RAPID_API_KEY}`,
+            'X-RapidAPI-Host': `${process.env.NEXT_PUBLIC_RAPID_API_HOST}`
+            // 'X-RapidAPI-Host': "veriphone.p.rapidapi.com"
         }
     };
 
@@ -147,7 +148,6 @@ export default function topup() {
                                                     {
                                                         step == 0 && <Input name="Enter Mobile Number" error={mobileError} validate={mobileValid} verify={verifyNumber} value={mobile} valueInput={(e: any) => setMobile(e.target.value)}/> 
                                                     }
-                                                    
                                                     {
                                                         step == 1 && <Input name="Enter Amount" error={amountError} validate={amountValid} verify={verifyAmount} value={amount} valueInput={(e: any) => setAmount(e.target.value)}  />
                                                     }
@@ -181,7 +181,7 @@ export default function topup() {
                                                                     >
                                                                     Submit
                                                                 </button> */}
-                                                                <Button />
+                                                                <Button validate={true} verify={() => setStep(prev => prev + 1) }/>
                                                             </div>
                                                         </div>
                                                     }
@@ -226,7 +226,7 @@ export default function topup() {
                                             <div className='flex items-center justify-between w-full mb-5'>
                                                 <div className='text-gray-400'>
                                                     <h5 className='text-black font-medium'>MTN Nigeria</h5>
-                                                    <h6>08106654406</h6>
+                                                    <h6>{mobile}</h6>
                                                     <h6>11th Oct, 2022 @ 10:15 GMT</h6>
                                                 </div>
                                                 <div className='h-12 w-12'>
@@ -241,7 +241,7 @@ export default function topup() {
                                                 </div>
                                                 <div className='text-gray-400 uppercase text-right'>
                                                     <h6>9S9B7-O4JJV-QI7P2-16CV6</h6>
-                                                    <h6>2348106654406</h6>
+                                                    <h6>{mobile}</h6>
                                                     <h6>Nafiu Taiwo</h6>
                                                 </div>
                                             </div>
@@ -250,19 +250,19 @@ export default function topup() {
                                                     <tr className=' border-t'>
                                                         <th className='text-left py-2.5'>Qty</th>
                                                         <th className='text-center'>Description</th>
-                                                        <th className='text-right'>Amount (NGN)</th>
+                                                        <th className='text-right'>{amount} (NGN)</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr className='border-b border-t hover:bg-indigo-100'>
                                                         <td className='text-left py-2.5'>x1</td>
-                                                        <td className='text-center py-2.5'>MTN Airtime for <p>2348106654406</p></td>
-                                                        <td className='text-right'>50.00</td>
+                                                        <td className='text-center py-2.5'>MTN Airtime for <p>{mobile}</p></td>
+                                                        <td className='text-right'>{amount}.00</td>
                                                     </tr>
                                                     <tr>
                                                         <td className='text-left py-2.5'>Subtotal</td>
                                                         <td></td>
-                                                        <td className='text-right'>50.00</td>
+                                                        <td className='text-right'>{amount}.00</td>
                                                     </tr>
                                                     <tr>
                                                         <td className='text-left py-2.5'>Tax</td>
@@ -272,7 +272,7 @@ export default function topup() {
                                                     <tr className='border-b'>
                                                         <td className='text-left py-2.5'>Total</td>
                                                         <td></td>
-                                                        <td className='text-right'>NGN 50.00</td>
+                                                        <td className='text-right'>NGN {amount}.00</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
