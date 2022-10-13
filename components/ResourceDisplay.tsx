@@ -1,22 +1,24 @@
 import React from 'react';
 
 
-export default function AirtimeResourceDisplay({...props}) {
+export default function ResourceDisplay({serviceSelected, resource} : any) {
     return (
-        <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
-            <h2 className="text-xl font-medium text-gray-900">{props.resource.title}</h2>
+        <div className="mx-auto max-w-2xl py-0 sm:py-0 md:py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+            <h2 className="text-xl font-medium text-gray-900">{resource.title}</h2>
             <hr className="mx-1 my-4"/>
-            <ul role="list" className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {props.resource.products.map((product: any) => (
-                    <li
-                        className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow"
+            <ul role="list" className="grid grid-cols-2 gap-2.5 md:10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {resource.products.map((product: any) => {
+                    const {image, provider} = product
+                return (
+                    <li onClick={() => serviceSelected({provider, image}) }
+                        className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow sm:h-44 md:h-auto"
                     >
                         <div className="flex flex-1 flex-col p-4">
-                            <img className="mx-auto h-32 w-32 flex-shrink-0 " src={product.imageUrl} alt=""/>
-                            <h3 className="mt-6 text-sm font-small text-gray-900">{product.airtimeProvider}</h3>
+                            <img className="mx-auto h-32 w-32 flex-shrink-0  " src={image} alt=""/>
+                            <h3 className="mt-0.5 text-sm font-small text-gray-900">{provider}</h3>
                         </div>
                     </li>
-                ))}
+                )})}
             </ul>
         </div>
     )
