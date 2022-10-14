@@ -1,77 +1,14 @@
-import React, {useEffect, useRef} from 'react';
-import Balance from '../../components/Navbar/Balance';
-
-import {Fragment, useState} from 'react'
-import {Dialog, Menu, Transition} from '@headlessui/react'
-
-import {
-    BellIcon,
-    CalendarIcon,
-    ChartBarIcon,
-    FolderIcon,
-    HomeIcon,
-    DeviceMobileIcon,
-    InboxIcon,
-    MenuAlt2Icon,
-    UsersIcon,
-    ShoppingCartIcon,
-    XIcon,
-    TruckIcon,
-    CashIcon,
-    CurrencyDollarIcon
-} from '@heroicons/react/outline'
-import {SearchIcon} from '@heroicons/react/solid'
-import {useSession, signOut} from "next-auth/react";
-import {useRouter} from "next/router";
-import Link from "next/link";
-import {useAuth} from "../../context/AuthContext";
-import AirtimeResourceDisplay from "../../components/ResourceDisplay";
-
-const navigation = [
-    {name: 'Dashboard', href: '#', icon: HomeIcon, current: true},
-    {name: 'Airtime & Bundle', href: '#', icon: DeviceMobileIcon, current: false},
-    {name: 'Pay Bills', href: '#', icon: ShoppingCartIcon, current: false},
-    {name: 'Cable TV', href: '#', icon: InboxIcon, current: false},
-    // coming soon
-    {name: 'Car Insurance', href: '#', icon: TruckIcon, current: false},
-    {name: 'Betting', href: '#', icon: UsersIcon, current: false},
-    {name: 'Fund Transfer', href: '#', icon: CashIcon, current: false},
-    {name: 'Virtual Naira and Dollar Cards', href: '#', icon: CurrencyDollarIcon, current: false},
-
-
-]
-const userNavigation = [
-    {name: 'Your Profile', href: '#'},
-    {name: 'Settings', href: '#'},
-    {name: 'Sign out', href: '#'},
-]
-
-
-function classNames(...classes: any[]) {
-    return classes.filter(Boolean).join(' ')
-}
-
+import  Link from 'next/link';
+import { CashIcon, LightningBoltIcon, PhoneIcon, WifiIcon } from '@heroicons/react/outline';
+import QuickLink from '../../components/Dashboard/QuickLink';
 
 function dashboard() {
-    const {currentUser, logout} = useAuth()
-    const {push} = useRouter();
-    const [open, setOpen] = useState(true)
-    const [error, setError] = useState("")
-    const cancelButtonRef = useRef(null)
-    const [sidebarOpen, setSidebarOpen] = useState(false)
-
-
-    const handleSignOut = async () => {
-        setError('')
-        try {
-            push('/')
-            await logout()
-        } catch {
-            setError('Failed to log out')
-        }
-
-    }
-
+    const QuickLinks = [
+        {name: "Airtime", icon:PhoneIcon, url : 'dashboard/topup'},
+        {name: "Electricity", icon:LightningBoltIcon, url : 'dashboard/electricity'},
+        {name: "Data", icon:WifiIcon, url : '#'},
+        {name: "Collect Payment", icon: CashIcon, url : '#'},
+    ]
 
     // @ts-ignore
     return (
@@ -313,15 +250,41 @@ function dashboard() {
         // </div>
         <main>
             <div className="py-6">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                    <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mb-10">
+                    <h1 className="text-2xl font-semibold text-gray-900">Welcome, Taiwo</h1>
                 </div>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                    {/* Replace with your content */}
-                    <div className="py-4">
-                        <div className="border-4 border-dashed border-gray-200 rounded-lg h-96"/>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 ">
+                    <div className=" bg-gray-100 rounded-md p-2.5 grid grid-cols-1 lg:grid-cols-2 gap-2.5 md:gap-10 md:px-10 md:py-10">
+                        <div className='duration-700 hover:scale-105 hover:shadow-xl h-56 bg-white p-8 flex justify-between items-center flex-col rounded-lg'>
+                            <div className='w-full '>
+                                <h2 className='text-xl font-bold'>Wallet Balance: N 0.00</h2>
+                            </div>
+                            <div className='flex justify-between items-center w-full'>
+                                <div>
+                                    <h4 className='font-normal text-md'>NAFIU TAIWO</h4>
+                                </div>
+                                <div className='h-10 w-10 flex justify-center items-center'>
+                                    <img src="/mastercard.png" alt="" className='w-full' />
+                                </div>
+                            </div>
+                        </div>
+                        <div className='gap-3 duration-700 hover:scale-105 hover:shadow-xl bg-white p-8 grid grid-cols-1 lg:grid-cols-2 md:justify-items-center rounded-lg'>
+                            {QuickLinks.map((link, index) :any => {
+                                const {name, icon, url} = link
+                                return (
+                                    <QuickLink link={link} />
+                                )
+                            })}
+                        </div>
+                        <div className='bg-white p-8 md:col-span-full'>
+                            <div>
+                                <h2>Last Transactions</h2>
+                            </div>
+                            <div>
+                                <h3>Transactions</h3>
+                            </div>
+                        </div>
                     </div>
-                    {/* /End replace */}
                 </div>
             </div>
         </main>

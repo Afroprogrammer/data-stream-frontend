@@ -114,15 +114,15 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: any) => {
             </Dialog>
         </Transition.Root>
         {/* Sidebar component, swap this element with another sidebar if you like */}
-        <div className="flex flex-col flex-grow pt-5 bg-indigo-700 overflow-y-auto">
+        <div className="flex flex-col flex-grow pt-5 bg-white-100 overflow-y-auto border-r-2 border-indigo-100">
             <div className="flex items-center flex-shrink-0 px-4">
                 <img
-                    className="h-8 w-auto"
-                    src="/logowhite.png"
+                    className="h-9 w-auto"
+                    src="/cushlogo-blue.png"
                     alt="Workflow"
                 />
             </div>
-            <div className="mt-5 flex-1 flex flex-col">
+            <div className="mt-10 flex-1 flex flex-col">
                 <nav className="flex-1 px-2 pb-4 space-y-1">
                     {navigation.map((item) => (
                         <Link
@@ -131,11 +131,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: any) => {
                             >
                             <a
                                 className={classNames(
-                                    router.pathname == item.href ? 'bg-indigo-800 text-white active' : 'text-indigo-100 hover:bg-indigo-600',
+                                    router.pathname == item.href ? 'bg-indigo-800 text-white active text-bold' : 'text-indigo-800 hover:bg-indigo-800 hover:text-white',
                                     'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
                                 )}
                             >
-                                <item.icon className="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
+                                <item.icon className="mr-3 flex-shrink-0 h-6 w-6"
                                             aria-hidden="true"/>
                                 {item.name}
                             </a>

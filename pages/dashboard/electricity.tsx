@@ -3,11 +3,14 @@ import Display from './../../components/Display';
 import TopUpHeader from '../../components/topup/TopUpHeader';
 import Input from './../../components/topup/Input';
 import Button from '../../components/topup/Button';
+import Link from 'next/link';
 
 const electricity = () => {
     const [step, setStep] = useState(0);
     const [meterNumber, setMeterNumber] = useState('');
     const [amount, setAmount] = useState('');
+    const [meterValid, setMeterValid] = useState(true);
+    const [amountValid, setAmountValid] = useState(true);
     const [selectedDisco, setSelectedDisco] = useState({
         provider: '',
         image: ''
@@ -16,6 +19,18 @@ const electricity = () => {
     const selectDisco = (discoSelected : any) => {
         setSelectedDisco((prev) => ({ ...discoSelected }))
         setStep(prev => prev + 1)
+    }
+
+    const verifyMeterNumber = () => {
+        if(meterValid) {
+            setStep(prev => prev + 1)
+        }
+    }
+
+    const verifyAmount = () => {
+        if(amountValid) {
+            setStep(prev => prev + 1)
+        }
     }
 
     const resources = [
@@ -81,10 +96,10 @@ const electricity = () => {
                                 <div className="bg-white py-8 sm:rounded-lg md:max-w-md w-full">
                                     <form className="space-y-6" action="#" method="POST">
                                         {
-                                            step == 1 && <Input name="Meter Number" error={false} validate={true} verify={true} value={meterNumber} valueInput={(e: any) => setMeterNumber(e.target.value)} /> 
+                                            step == 1 && <Input name="Meter Number" error={false} validate={meterValid} verify={verifyMeterNumber} value={meterNumber} valueInput={(e: any) => setMeterNumber(e.target.value)} /> 
                                         }
                                         {
-                                            step == 2 && <Input name="Enter Amount" error={false} validate={true} verify={true} value={amount} valueInput={(e: any) => setAmount(e.target.value)}  />
+                                            step == 2 && <Input name="Enter Amount" error={false} validate={amount} verify={verifyAmount} value={amount} valueInput={(e: any) => setAmount(e.target.value)}  />
                                         }
                                         {
                                             step == 3 && 
@@ -117,7 +132,7 @@ const electricity = () => {
                     </div>
                 </div>
             }
-            {/* {
+            {
                 step == 4 && 
                 <div className='w-full flex flex-col justify-between items-start sm:flex-col lg:flex-row p-4'>
                     <div className='sm:w-full md:w-full lg:w-3/5'>
@@ -136,7 +151,7 @@ const electricity = () => {
                                     <img src="/wallet.png" alt="" className='w-full'/>
                                 </div>
                                 <div>
-                                    <h5 className='font-bold text-base'>{mobile}</h5>
+                                    <h5 className='font-bold text-base'>{meterNumber}</h5>
                                     <p className='text-xs text-gray-400 font-medium uppercase'>Datastream Wallet</p>
                                 </div>
                             </div>
@@ -151,7 +166,7 @@ const electricity = () => {
                                 <div className='flex items-center justify-between w-full mb-5'>
                                     <div className='text-gray-400'>
                                         <h5 className='text-black font-medium'>MTN Nigeria</h5>
-                                        <h6>{mobile}</h6>
+                                        <h6>{meterNumber}</h6>
                                         <h6>11th Oct, 2022 @ 10:15 GMT</h6>
                                     </div>
                                     <div className='h-12 w-12'>
@@ -166,7 +181,7 @@ const electricity = () => {
                                     </div>
                                     <div className='text-gray-400 uppercase text-right'>
                                         <h6>9S9B7-O4JJV-QI7P2-16CV6</h6>
-                                        <h6>{mobile}</h6>
+                                        <h6>{meterNumber}</h6>
                                         <h6>Nafiu Taiwo</h6>
                                     </div>
                                 </div>
@@ -181,7 +196,7 @@ const electricity = () => {
                                     <tbody>
                                         <tr className='border-b border-t hover:bg-indigo-100'>
                                             <td className='text-left py-2.5'>x1</td>
-                                            <td className='text-center py-2.5'>MTN Airtime for <p>{mobile}</p></td>
+                                            <td className='text-center py-2.5'>{selectedDisco.provider} for <p>{meterNumber}</p></td>
                                             <td className='text-right'>{amount}.00</td>
                                         </tr>
                                         <tr>
@@ -205,7 +220,7 @@ const electricity = () => {
                         </div>
                     </div>
                 </div>
-            } */}
+            }
         </div>
     </main>
   )
