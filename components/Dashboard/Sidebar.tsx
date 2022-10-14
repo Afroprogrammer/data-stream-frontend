@@ -56,7 +56,7 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: any) => {
                         leaveTo="-translate-x-full"
                     >
                         <Dialog.Panel
-                            className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-indigo-700">
+                            className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-white">
                             <Transition.Child
                                 as={Fragment}
                                 enter="ease-in-out duration-300"
@@ -77,10 +77,10 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: any) => {
                                     </button>
                                 </div>
                             </Transition.Child>
-                            <div className="flex-shrink-0 flex items-center px-4">
+                            <div className="flex-shrink-0 flex items-center px-4 ">
                                 <img
                                     className="h-8 w-auto"
-                                    src="/crushBigCrop.png"
+                                    src="/cushlogo-blue.png"
                                     alt="Workflow"
                                 />
                             </div>
@@ -93,11 +93,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: any) => {
                                             >
                                             <a
                                                 className={classNames(
-                                                    router.pathname == item.href ? 'bg-indigo-800 text-white active' : 'text-indigo-100 hover:bg-indigo-600',
+                                                    router.pathname == item.href ? 'bg-indigo-800 text-white active text-bold' : 'text-indigo-800 hover:bg-indigo-800 hover:text-white',
                                                     'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
                                                 )}
                                             >
-                                                <item.icon className="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
+                                                <item.icon className="mr-3 flex-shrink-0 h-6 w-6"
                                                             aria-hidden="true"/>
                                                 {item.name}
                                             </a>
