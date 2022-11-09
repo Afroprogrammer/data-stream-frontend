@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from './Button';
 
-const MobileNumber = ({name, validate, verify, value, valueInput, error} :any) => {
+const Input = ({name, validate, verify, value, valueInput, error} :any) => {
   return (
     <div>
         <label htmlFor="email" className="block text-md font-thin capitalize font-medium text-gray-700">
@@ -26,4 +26,4 @@ const MobileNumber = ({name, validate, verify, value, valueInput, error} :any) =
   )
 }
 
-export default MobileNumber
+export default Input

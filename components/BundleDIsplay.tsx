@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AirtimeResourceDisplay from "./AirtimeResourceDisplay";
+import AirtimeResourceDisplay from "./ResourceDisplay";
 import BundleResourceDisplay from "./BundleResourceDisplay";
 
 const resources = [
