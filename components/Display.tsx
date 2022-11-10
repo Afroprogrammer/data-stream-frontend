@@ -9,6 +9,7 @@ function Display({serviceSelected, resources}:any) {
             ))}
         </div>
     );
+    
 }
 
 export default Display;
