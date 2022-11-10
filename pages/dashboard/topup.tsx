@@ -216,7 +216,7 @@ export default function topup() {
                 {
                     step == 4 && 
                     <div className='w-full flex flex-col justify-between items-start sm:flex-col lg:flex-row p-4'>
-                        <div className='sm:w-full md:w-full lg:w-3/5'>
+                        <div className='w-full sm:w-full md:w-full lg:w-3/5'>
                             <div className='flex justify-between items-center w-full py-2.5 border-b-2 border-grey-500 mb-5'>
                                 <div className='text-base font-bold text-black capitalize'>
                                     Select payment method
@@ -241,7 +241,7 @@ export default function topup() {
                                 <button type='button' className='inline-block px-5 py-3 bg-indigo-700 rounded text-white font-medium uppercase'>Pay Now</button>
                             </div>
                         </div>
-                        <div className='sm:w-full md:w-full lg:w-2/5 pl-2.5'>
+                        <div className='w-full sm:w-full md:w-full lg:w-2/5 pl-2.5'>
                             {/* invoice */}
                             <div className='p-4 w-full'>
                                 <div className='w-full'>
