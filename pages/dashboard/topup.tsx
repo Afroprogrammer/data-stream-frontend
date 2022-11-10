@@ -103,7 +103,20 @@ export default function topup() {
     };
 
     const verifyNumber = async () => {
-        const response: any = await fetch(`https://veriphone.p.rapidapi.com/verify?phone=%2B$${mobile}`, options);
+        if(mobile.length > 11) {
+            const response: any = await fetch(`https://veriphone.p.rapidapi.com/verify?phone=%2B$${mobile}`, options);
+            const data = await response.json()
+            console.log(data)
+            setMobileStatus(data.phone_valid)
+            if (data.phone_valid) {
+                console.log("success");
+                setMobileError(" ")
+                setStep(pre => pre + 1)
+            } else {
+                setMobileError("Mobile Number is not valid")
+            }
+        }
+        const response: any = await fetch(`https://veriphone.p.rapidapi.com/verify?phone=%2B$234${mobile.slice(1)}`, options);
         const data = await response.json()
         console.log(data)
         setMobileStatus(data.phone_valid)
