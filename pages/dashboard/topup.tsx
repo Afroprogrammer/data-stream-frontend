@@ -4,7 +4,6 @@ import TopUpHeader from '../../components/topup/TopUpHeader';
 import Link from 'next/link';
 import Button from '../../components/topup/Button';
 import Display from '../../components/Display';
-import PaystackBtn from './../../components/Paystack/PaystackBtn';
 
 export default function topup() {
 
@@ -104,20 +103,7 @@ export default function topup() {
     };
 
     const verifyNumber = async () => {
-        if(mobile.length > 11) {
-            const response: any = await fetch(`https://veriphone.p.rapidapi.com/verify?phone=%2B$${mobile}`, options);
-            const data = await response.json()
-            console.log(data)
-            setMobileStatus(data.phone_valid)
-            if (data.phone_valid) {
-                console.log("success");
-                setMobileError(" ")
-                setStep(pre => pre + 1)
-            } else {
-                setMobileError("Mobile Number is not valid")
-            }
-        }
-        const response: any = await fetch(`https://veriphone.p.rapidapi.com/verify?phone=%2B$234${mobile.slice(1)}`, options);
+        const response: any = await fetch(`https://veriphone.p.rapidapi.com/verify?phone=%2B$${mobile}`, options);
         const data = await response.json()
         console.log(data)
         setMobileStatus(data.phone_valid)
@@ -239,8 +225,7 @@ export default function topup() {
                                 </div>
                             </div>
                             <div className='w-full flex justify-center items center mt-8'>
-                                {/* <button type='button' className='inline-block px-5 py-3 bg-indigo-700 rounded text-white font-medium uppercase'>Pay Now</button> */}
-                                <PaystackBtn amount={amount}/>
+                                <button type='button' className='inline-block px-5 py-3 bg-indigo-700 rounded text-white font-medium uppercase'>Pay Now</button>
                             </div>
                         </div>
                         <div className='sm:w-full md:w-full lg:w-2/5 pl-2.5'>

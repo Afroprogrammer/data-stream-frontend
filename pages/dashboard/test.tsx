@@ -1,6 +1,6 @@
 import React from 'react';
-import AirtimeDisplay from "../components/AirtimeDisplay";
-import BundleDisplay from "../components/BundleDIsplay";
+import AirtimeDisplay from "../../components/Display";
+import BundleDisplay from "../../components/BundleDIsplay";
 import {LockClosedIcon} from '@heroicons/react/solid'
 
 import { Dialog, Transition } from '@headlessui/react'

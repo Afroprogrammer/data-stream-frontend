@@ -6,19 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 
 import {
     BellIcon,
-    CalendarIcon,
-    ChartBarIcon,
-    FolderIcon,
-    HomeIcon,
-    DeviceMobileIcon,
-    InboxIcon,
-    MenuAlt2Icon,
-    UsersIcon,
-    ShoppingCartIcon,
-    XIcon,
-    TruckIcon,
-    CashIcon,
-    CurrencyDollarIcon
+    MenuAlt2Icon
 } from '@heroicons/react/outline';
 import {SearchIcon} from '@heroicons/react/solid';
 function classNames(...classes: any[]) {
@@ -26,9 +14,7 @@ function classNames(...classes: any[]) {
 }
 
 
-const Navbar = () => {
-    
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+const Navbar = ({setSidebarOpen} :any) => {
     const {currentUser, logout} = useAuth();
     const {push} = useRouter();
     const [error, setError] = useState("");

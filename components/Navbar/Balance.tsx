@@ -1,10 +1,10 @@
 const Balance = () => {
   return (
-    <div className=" w-48 h-14 bg-indigo-700 rounded mx-3">
+    <div className=" w-48 h-14 bg-indigo-700 rounded mx-3 hidden block sm:block">
         <div className="flex justify-between items-center h-full px-3.5">
             <div className="flex flex-col items-start justify-center h-full">
                 <div className="text-xs font-normal text-white">
-                    Data Stream Balance:
+                    Cush Balance:
                 </div>
                 <div className="text-base font-bold text-white">
                     N 0.00
