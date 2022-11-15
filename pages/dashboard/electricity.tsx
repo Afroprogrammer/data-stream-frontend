@@ -37,23 +37,23 @@ const electricity = () => {
     });
 
     const requestOptions : any = {
-    method: 'POST',
-    headers: myHeaders,
-    body: raw,
-    redirect: 'follow'
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
     };
 
     useEffect(() => {
-        if(meterNumber) {
-            setMeterValid(true)
-            setMeterNumberError('')
-        } else if (meterNumber == '') {
+        // verify metre number
+        if (meterNumber == '') {
             setMeterValid(false)
-            setMeterNumberError('Meter number cannot be empty')
         } else if (!meterNumber) {
             setMeterValid(false)
-            setMeterNumberError('Meter number cannot be empty')
+        } else {
+            setMeterValid(true)
         }
+
+        // metre number length
 
         if(meterNumber.length < 10 ) {
             setMeterNumberError('')
@@ -62,24 +62,29 @@ const electricity = () => {
             setMeterValid(true)
             setMeterNumberError('')
         } else {
-            setMeterNumberError('Meter number cannot be more than 10 digits')
             setMeterValid(false)
+            setMeterNumberError('Meter number cannot be more than 10 digits')
         }
 
-        if (amount) {
+        // Amount validation
+
+        if (!amount) {
+            setAmountValid(false);
+        } else if(amount == '') {
+            setAmountValid(false);
+        } else {
             setAmountValid(true)
             setAmountError('')
-        } else if (!amount) {
-            setAmountValid(false);
-            setAmountError("Amount cannot be empty")
-        } else if(amount == '') {
-            setAmountValid(false)
-            setAmountError("Amount cannot be empty")
         }
         
         if (Number(amount) > 10000) {
             setAmountError("Amount cannot be greater than N10,000. ")
             setAmountValid(false)
+        } else if (Number(amount) < 50) {
+            setAmountValid(false)
+        } else {
+            setAmountValid(true)
+            setAmountError('')
         }
 
     },[meterNumber, amount])
@@ -106,6 +111,10 @@ const electricity = () => {
 
 
     const verifyAmount = () => {
+        if(Number(amount) < 50) {
+            setAmountError("Amount cannot less than N50");
+            setAmountValid(false);
+        }
         if(amountValid) {
             setStep(prev => prev + 1)
         }
