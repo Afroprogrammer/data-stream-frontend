@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Display from './../../components/Display';
 import TopUpHeader from '../../components/topup/TopUpHeader';
 import Input from './../../components/topup/Input';
@@ -8,12 +8,15 @@ import Link from 'next/link';
 const electricity = () => {
     const [step, setStep] = useState(0);
     const [meterNumber, setMeterNumber] = useState('');
+    const [meterNumberError, setMeterNumberError] = useState('');
     const [amount, setAmount] = useState('');
-    const [meterValid, setMeterValid] = useState(true);
-    const [amountValid, setAmountValid] = useState(true);
+    const [amountError, setAmountError] = useState('');
+    const [meterValid, setMeterValid] = useState(false);
+    const [amountValid, setAmountValid] = useState(false);
     const [selectedDisco, setSelectedDisco] = useState({
         provider: '',
-        image: ''
+        image: '',
+        serviceType: ''
     });
 
     const selectDisco = (discoSelected : any) => {
@@ -21,13 +24,97 @@ const electricity = () => {
         setStep(prev => prev + 1)
     }
 
-    const verifyMeterNumber = () => {
-        if(meterValid) {
-            setStep(prev => prev + 1)
+    // Check meter validity
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("x-api-key", "T7Wi2Q7tHFkq6sxU5WaUSBIGg3ynb96Qi74RnAeY6ys=");
+
+    var raw = JSON.stringify({
+        "service_type": selectedDisco.serviceType,
+        "account_number": meterNumber
+    });
+
+    const requestOptions : any = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    useEffect(() => {
+        // verify metre number
+        if (meterNumber == '') {
+            setMeterValid(false)
+        } else if (!meterNumber) {
+            setMeterValid(false)
+        } else {
+            setMeterValid(true)
         }
+
+        // metre number length
+
+        if(meterNumber.length < 10 ) {
+            setMeterNumberError('')
+            setMeterValid(false)
+        } else if(meterNumber.length == 10) {
+            setMeterValid(true)
+            setMeterNumberError('')
+        } else {
+            setMeterValid(false)
+            setMeterNumberError('Meter number cannot be more than 10 digits')
+        }
+
+        // Amount validation
+
+        if (!amount) {
+            setAmountValid(false);
+        } else if(amount == '') {
+            setAmountValid(false);
+        } else {
+            setAmountValid(true)
+            setAmountError('')
+        }
+        
+        if (Number(amount) > 10000) {
+            setAmountError("Amount cannot be greater than N10,000. ")
+            setAmountValid(false)
+        } else if (Number(amount) < 50) {
+            setAmountValid(false)
+        } else {
+            setAmountValid(true)
+            setAmountError('')
+        }
+
+    },[meterNumber, amount])
+
+
+    // End meter validity
+
+    const verifyMeterNumber = () => {
+        fetch("https://api.staging.baxibap.com/services/electricity/verify", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result.status)
+            if(result.status == 'success' && result.code == 200) {
+                setMeterValid(true)
+                setMeterNumberError('')
+                setStep(prev => prev + 1)
+            } else {
+                setMeterNumberError('The meter number is not valid')
+            }
+        })
+        .catch(error => console.log('error', error));
     }
 
+
+
     const verifyAmount = () => {
+        if(Number(amount) < 50) {
+            setAmountError("Amount cannot less than N50");
+            setAmountValid(false);
+        }
         if(amountValid) {
             setStep(prev => prev + 1)
         }
@@ -40,39 +127,48 @@ const electricity = () => {
                 {
                     provider: 'Aedc Disco',
                     image:  '/electricity/aedc.png',
+                    serviceType: 'eko_electric_postpaid'                    
                 },
                 {
                     provider: 'Benin Disco',
                     image:  '/electricity/benin.png',
+                    serviceType: 'eko_electric_postpaid'
                 },
                 {
                     provider: 'Eko Disco',
                     image:  '/electricity/eko.png',
+                    serviceType: 'eko_electric_postpaid'
                 },
                 {
                     provider: 'Enugu Disco',
                     image:  '/electricity/enugu.png',
+                    serviceType: 'eko_electric_postpaid'
                 },
                 {
                     provider: 'Ibadan Disco',
                     image:  '/electricity/ibadan.png',
+                    serviceType: 'eko_electric_postpaid'
                 },
                 {
                     provider: 'Ikeja Disco',
                     image:  '/electricity/ikeja.png',
+                    serviceType: 'eko_electric_postpaid'
                 },
                 {
                     provider: 'Jos Disco',
                     image:  '/electricity/jos.png',
+                    serviceType: 'eko_electric_postpaid'
+
                 },
                 {
                     provider: 'Kaduna Disco',
                     image:  '/electricity/kaduna.png',
+                    serviceType: 'eko_electric_postpaid'
+
                 },
     
             ]
         },
-    
     ]
   return (
     <main>
@@ -96,10 +192,10 @@ const electricity = () => {
                                 <div className="bg-white py-8 sm:rounded-lg md:max-w-md w-full">
                                     <form className="space-y-6" action="#" method="POST">
                                         {
-                                            step == 1 && <Input name="Meter Number" error={false} validate={meterValid} verify={verifyMeterNumber} value={meterNumber} valueInput={(e: any) => setMeterNumber(e.target.value)} /> 
+                                            step == 1 && <Input name="Meter Number" error={meterNumberError} validate={meterValid} verify={verifyMeterNumber} value={meterNumber} valueInput={(e: any) => setMeterNumber(e.target.value)} /> 
                                         }
                                         {
-                                            step == 2 && <Input name="Enter Amount" error={false} validate={amount} verify={verifyAmount} value={amount} valueInput={(e: any) => setAmount(e.target.value)}  />
+                                            step == 2 && <Input name="Enter Amount" error={amountError} validate={amountValid} verify={verifyAmount} value={amount} valueInput={(e: any) => setAmount(e.target.value)}  />
                                         }
                                         {
                                             step == 3 && 
@@ -135,7 +231,7 @@ const electricity = () => {
             {
                 step == 4 && 
                 <div className='w-full flex flex-col justify-between items-start sm:flex-col lg:flex-row p-4'>
-                    <div className='sm:w-full md:w-full lg:w-3/5'>
+                    <div className='w-full sm:w-full md:w-full lg:w-3/5'>
                         <div className='flex justify-between items-center w-full py-2.5 border-b-2 border-grey-500 mb-5'>
                             <div className='text-base font-bold text-black capitalize'>
                                 Select payment method
@@ -160,7 +256,7 @@ const electricity = () => {
                             <button type='button' className='inline-block px-5 py-3 bg-indigo-700 rounded text-white font-medium uppercase'>Pay Now</button>
                         </div>
                     </div>
-                    <div className='sm:w-full md:w-full lg:w-2/5 pl-2.5'>
+                    <div className='w-full sm:w-full md:w-full lg:w-2/5 pl-2.5'>
                         <div className='p-4 w-full'>
                             <div className='w-full'>
                                 <div className='flex items-center justify-between w-full mb-5'>

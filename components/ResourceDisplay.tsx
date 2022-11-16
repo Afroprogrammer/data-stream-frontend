@@ -8,9 +8,9 @@ export default function ResourceDisplay({serviceSelected, resource} : any) {
             <hr className="mx-1 my-4"/>
             <ul role="list" className="grid grid-cols-2 gap-2.5 md:10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {resource.products.map((product: any) => {
-                    const {image, provider} = product
+                    const {image, provider, serviceType} = product
                 return (
-                    <li onClick={() => serviceSelected({provider, image}) }
+                    <li onClick={() => serviceSelected({provider, image, serviceType}) }
                         className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow sm:h-44 md:h-auto"
                     >
                         <div className="flex flex-1 flex-col p-4">
