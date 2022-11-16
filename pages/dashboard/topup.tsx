@@ -29,61 +29,28 @@ export default function topup() {
     // Input error
     const [mobileError, setMobileError] = useState('');
     const [amountError, setAmountError] = useState('');
-    
-    const [mobileStatus, setMobileStatus] = useState('');
-    const [error, setError] = useState('')
-    const [mobileStatusError, setMobileStatusError] = useState('');
 
     useEffect(() => {
+        // Validate mobile number
         if (mobile) {
             setMobileValid(true);
-        } else if (mobile == '') {
+        } else if(!mobile || mobile == "") {
             setMobileValid(false)
-            setAmountError("Amount cannot be empty")
-        } else if (!mobile) {
-            setMobileValid(false)
-            setAmountError("Amount cannot be empty")
         }
 
-        // validate amount
+        // validate number
 
-        if (amount) {
-            setAmountValid(true)
-        } else if (!amount) {
+        if (!amount) {
             setAmountValid(false);
-            setAmountError("Amount cannot be empty")
-        } else if(amount == '') {
-            setAmountValid(false)
-            setAmountError("Amount cannot be empty")
-        } if (Number(amount) > 10000) {
-            setAmountError("Amount cannot be greater than N10,000. ")
-            setAmountValid(false)
+        } else if (Number(amount) > 10000) {
+            setAmountError("Amount cannot be greater than N10,000. ");
+            setAmountValid(false);
         } else {
-            setAmountError('')
+            setAmountError('');
             setAmountValid(true);
         }
-        
-    }, [mobile, amount])
-
-    // Validate Amount
-
-    const validateAmount = () => {
-        if (amount) {
-            setAmountValid(true)
-        } else if (!amount) {
-            setAmountValid(false);
-            setAmountError("Amount cannot be empty")
-        } else if(amount == '') {
-            setAmountValid(false)
-            setAmountError("Amount cannot be empty")
-        } if (Number(amount) > 1000) {
-            setAmountError("Amount cannot be greater than N10,000. ")
-            setAmountValid(false)
-        } else {
-            setAmountError('')
-            setAmountValid(true);
-        }
-    }
+    
+    }, [mobile, amount]);
 
     const verifyAmount = () => {
         if (amountValid) {
@@ -91,14 +58,13 @@ export default function topup() {
         }
     }
 
-    // API mobile inpute validation
+    // API mobile input validation
 
     const options = {
         method: 'GET',
         headers: {
             'X-RapidAPI-Key' : `${process.env.NEXT_PUBLIC_RAPID_API_KEY}`,
             'X-RapidAPI-Host': `${process.env.NEXT_PUBLIC_RAPID_API_HOST}`
-            // 'X-RapidAPI-Host': "veriphone.p.rapidapi.com"
         }
     };
 
@@ -118,13 +84,12 @@ export default function topup() {
         }
         const response: any = await fetch(`https://veriphone.p.rapidapi.com/verify?phone=%2B$234${mobile.slice(1)}`, options);
         const data = await response.json()
-        console.log(data)
-        setMobileStatus(data.phone_valid)
         if (data.phone_valid) {
-            console.log("success");
             setMobileError(" ")
+            setMobileValid(true)
             setStep(pre => pre + 1)
         } else {
+            setMobileValid(false)
             setMobileError("Mobile Number is not valid")
         }
     }
