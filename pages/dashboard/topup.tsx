@@ -4,7 +4,6 @@ import TopUpHeader from '../../components/topup/TopUpHeader';
 import Link from 'next/link';
 import Button from '../../components/topup/Button';
 import Display from '../../components/Display';
-import { redirect } from 'next/dist/server/api-utils';
 
 export default function topup() {
 
@@ -31,17 +30,6 @@ export default function topup() {
     const [mobileError, setMobileError] = useState('');
     const [amountError, setAmountError] = useState('');
 
-    const [payUrl, setPayUrl] = useState('');
-
-    // data 
-    const [body, setBody] = useState({
-        phone: '',
-        operatorId: '',
-        amount: 0,
-        plan: '',
-        useWalletBalance: false
-    })
-
     useEffect(() => {
         // Validate mobile number
         if (mobile) {
@@ -61,17 +49,8 @@ export default function topup() {
             setAmountError('');
             setAmountValid(true);
         }
-
-        setBody(prevState => ({
-            ...prevState,
-            phone: mobile,
-            operatorId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            [amount]: amount,
-            plan: "prepaid",
-            useWalletBalance: false, 
-        }))
     
-    }, [mobile, amount, body]);
+    }, [mobile, amount]);
 
     const verifyAmount = () => {
         if (amountValid) {
@@ -93,6 +72,8 @@ export default function topup() {
         if(mobile.length > 11) {
             const response: any = await fetch(`https://veriphone.p.rapidapi.com/verify?phone=%2B$${mobile}`, options);
             const data = await response.json()
+            console.log(data)
+            setMobileStatus(data.phone_valid)
             if (data.phone_valid) {
                 console.log("success");
                 setMobileError(" ")
@@ -111,21 +92,6 @@ export default function topup() {
             setMobileValid(false)
             setMobileError("Mobile Number is not valid")
         }
-    }
-
-    const airtimePurchase = async() => {
-        const req = await fetch(
-            `${process.env.NEXT_CUSH_ULR}/api/airtime_bill_payment/checkout`,
-            {
-                method: "POST",
-                headers: {'Content-Type':'application/json'},
-                body: JSON.stringify(body)
-            }
-        )
-
-        const res = await req.json();
-        setPayUrl(res)
-        console.log(payUrl)
     }
 
     const resources = [
@@ -237,7 +203,7 @@ export default function topup() {
                                 </div>
                             </div>
                             <div className='w-full flex justify-center items center mt-8'>
-                                <button type='button' className='inline-block px-5 py-3 bg-indigo-700 rounded text-white font-medium uppercase' onClick={() => airtimePurchase}>Pay Now</button>
+                                <button type='button' className='inline-block px-5 py-3 bg-indigo-700 rounded text-white font-medium uppercase'>Pay Now</button>
                             </div>
                         </div>
                         <div className='w-full sm:w-full md:w-full lg:w-2/5 pl-2.5'>
