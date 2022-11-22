@@ -62,16 +62,16 @@ export default function topup() {
             setAmountValid(true);
         }
 
-        setBody(prevState => ({
-            ...prevState,
-            phone: mobile,
-            operatorId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            [amount]: amount,
-            plan: "prepaid",
-            useWalletBalance: false, 
-        }))
+        // setBody(prevState => ({
+        //     ...prevState,
+        //     phone: mobile,
+        //     operatorId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        //     [amount]: amount,
+        //     plan: "prepaid",
+        //     useWalletBalance: false, 
+        // }))
     
-    }, [mobile, amount, body]);
+    }, [mobile, amount]);
 
     const verifyAmount = () => {
         if (amountValid) {
@@ -125,7 +125,6 @@ export default function topup() {
 
         const res = await req.json();
         setPayUrl(res)
-        console.log(payUrl)
     }
 
     const resources = [
