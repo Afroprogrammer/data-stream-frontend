@@ -13,18 +13,19 @@ function MyApp({Component, pageProps}: AppProps) {
     const router = useRouter()
     return (
 
-        <AuthContextProvider>
-            {noAuthRequired.includes(router.pathname)
-                ? (
-                    <Component {...pageProps} />
-                )
-                : (
-                    <ProtectedRoute>
-                        <Component {...pageProps} />
-                    </ProtectedRoute>
-                )
-            }
-        </AuthContextProvider>
+        // <AuthContextProvider>
+        //     {noAuthRequired.includes(router.pathname)
+        //         ? (
+        //             <Component {...pageProps} />
+        //         )
+        //         : (
+        //             <ProtectedRoute>
+        //                 <Component {...pageProps} />
+        //             </ProtectedRoute>
+        //         )
+        //     }
+        // </AuthContextProvider>
+            <Component {...pageProps} />
     )
 
 //use this then you wan to test the app
